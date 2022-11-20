@@ -1,0 +1,55 @@
+#!/bin/sh
+#
+# vim-sway-nav - Use the same bindings to move focus between sway windows and
+# vim splits. Requires the accompanying vim plugin.
+
+dir="$1"
+
+case "$dir" in
+    up) ;;
+    right) ;;
+    down) ;;
+    left) ;;
+    *)
+        echo "USAGE: $0 up|right|down|left"
+        exit 1
+esac
+
+get_descendant_vim_pid() {
+    pid="$1"
+
+    if ps -o state= -o comm= -p "$pid" | grep -iqE 'g?(view|n?vim?x?)(diff)?$'; then
+        echo "$pid"
+        return 0
+    fi
+
+    for child in $(pgrep --runstates D,I,R,S --parent "$pid"); do
+        if get_descendant_vim_pid "$child"; then
+            # already echo'd PID in recursive call
+            return 0
+        fi
+    done
+
+    return 1
+}
+
+if focused_pid="$(swaymsg -t get_tree | jq -e '.. | select(.focused? == true).pid')"; then
+    if vim_pid="$(get_descendant_vim_pid "$focused_pid")"; then
+        servername_file="${XDG_RUNTIME_DIR:-/tmp}/vim-sway-nav.$vim_pid.servername"
+        read -r program servername <"$servername_file"
+
+        if [ "$program" = vim ]; then
+            serverarg=--servername
+        elif [ "$program" = nvim ]; then
+            serverarg=--server
+        fi
+
+        if [ -n "$serverarg" ] && [ -n "$servername" ]; then
+            "$program" "$serverarg" "$servername" \
+                --remote-expr "VimSwayNav('$dir')" >/dev/null 2>&1 \
+                && exit 0
+        fi
+    fi
+fi
+
+swaymsg focus "$dir"
