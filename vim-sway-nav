@@ -19,7 +19,7 @@ get_descendant_vim_pid() {
     pid="$1"
     terms="$2"
 
-    if ps -o state= -o comm= -p "$pid" | grep -iqE 'g?(view|n?vim?x?)(diff)?$'; then
+    if grep -iqE '^g?(view|n?vim?x?)(diff)?$' "/proc/$pid/comm"; then
         echo "$pid"
         return 0
     fi
