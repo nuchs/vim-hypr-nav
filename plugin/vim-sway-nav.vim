@@ -9,21 +9,24 @@ if exists("g:loaded_vim_sway_nav") || empty($SWAYSOCK) || !clientserver
 endif
 let g:loaded_vim_sway_nav = 1
 
-" Ensure we are running a server.
-if empty(v:servername) && !has("nvim")
-    call remote_startserver(rand())
-endif
+function s:setup()
+    " Ensure we are running a server.
+    if empty(v:servername) && !has("nvim")
+        call remote_startserver(rand())
+    endif
 
-" Create a file so the helper script knows how to send a command.
-let runtime_dir = empty($XDG_RUNTIME_DIR) ? "/tmp" : $XDG_RUNTIME_DIR
-let servername_file = runtime_dir . "/vim-sway-nav." . getpid() . ".servername"
-let program = has("nvim") ? "nvim" : "vim"
-call writefile([program . " " . v:servername], servername_file)
+    " Create a file so the helper script knows how to send a command.
+    let runtime_dir = empty($XDG_RUNTIME_DIR) ? "/tmp" : $XDG_RUNTIME_DIR
+    let s:servername_file = runtime_dir . "/vim-sway-nav." . getpid() . ".servername"
+    let program = has("nvim") ? "nvim" : "vim"
+    call writefile([program . " " . v:servername], s:servername_file)
+endfunction
 
-" Cleanup the servername file on exit.
+" Schedule setup and cleanup.
 augroup vim_sway_nav
     autocmd!
-    autocmd VimLeavePre * call delete(servername_file)
+    autocmd VimEnter * call s:setup()
+    autocmd VimLeavePre * call delete(s:servername_file)
 augroup END
 
 " Do some shenanigans to be compatible with jobs in vim and nvim (jobs are
