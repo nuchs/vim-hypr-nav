@@ -17,14 +17,15 @@ esac
 
 get_descendant_vim_pid() {
     pid="$1"
+    terms="$2"
 
     if ps -o state= -o comm= -p "$pid" | grep -iqE 'g?(view|n?vim?x?)(diff)?$'; then
         echo "$pid"
         return 0
     fi
 
-    for child in $(pgrep --runstates D,I,R,S --parent "$pid"); do
-        if get_descendant_vim_pid "$child"; then
+    for child in $(pgrep --runstates D,I,R,S --terminal "$terms" --parent "$pid"); do
+        if get_descendant_vim_pid "$child" "$terms"; then
             # already echo'd PID in recursive call
             return 0
         fi
@@ -34,7 +35,8 @@ get_descendant_vim_pid() {
 }
 
 if focused_pid="$(swaymsg -t get_tree | jq -e '.. | select(.focused? == true).pid')"; then
-    if vim_pid="$(get_descendant_vim_pid "$focused_pid")"; then
+    terms="$(find /dev/pts -type c -not -name ptmx | sed s#^/dev/## | tr '\n' ,)"
+    if vim_pid="$(get_descendant_vim_pid "$focused_pid" "$terms")"; then
         servername_file="${XDG_RUNTIME_DIR:-/tmp}/vim-sway-nav.$vim_pid.servername"
         read -r program servername <"$servername_file"
 
