@@ -20,7 +20,12 @@ get_descendant_vim_pid() {
     terms="$2"
 
     if grep -iqE '^g?(view|n?vim?x?)(diff)?$' "/proc/$pid/comm"; then
-        echo "$pid"
+        if embed_pid="$(pgrep --parent "$pid" --full 'nvim --embed')"; then
+            echo "$embed_pid"
+        else
+            echo "$pid"
+        fi
+
         return 0
     fi
 
