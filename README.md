@@ -17,13 +17,13 @@ First, install this repository as a Vim plugin. For example, if you use [vim-plu
 Plug "nuchs/vim-hypr-nav"
 ```
 
-Then, modify your Sway config to use `vim-hypr-nav` instead of your normal `focus left`, `focus down`, etc. bindings:
+Then, modify your Hyprland config to use `vim-hypr-nav` instead of your normal `movefocus left`, `movefocus down`, etc. bindings:
 
 ```
-bind = $mainMod, $left, exec vim-hypr-nav, l
-bind = $mainMod, $right, exec vim-hypr-nav, r
-bind = $mainMod, $up, exec vim-hypr-nav, u
-bind = $mainMod, $down, exec vim-hypr-nav, d
+bind = $mainMod, $left, exec, vim-hypr-nav l
+bind = $mainMod, $right, exec, vim-hypr-nav r
+bind = $mainMod, $up, exec, vim-hypr-nav u
+bind = $mainMod, $down, exec, vim-hypr-nav d
 ```
 
 You can now use `$mod+<direction>` to navigate among Hyprland windows and Vim splits!
