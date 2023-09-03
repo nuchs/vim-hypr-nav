@@ -1,10 +1,8 @@
-# vim-sway-nav
+# vim-hypr-nav
 
-**[jasoncarloscox.com/creations/vim-sway-nav](https://jasoncarloscox.com/creations/vim-sway-nav/)**
+Seamless navigation between [hyprland](https://hyprland.org/) windows and (Neo)Vim splits with the same key bindings.
 
-Seamless navigation between [Sway](https://swaywm.org/) windows and (Neo)Vim splits with the same key bindings.
-
-Inspired by [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator).
+Shamelessly hacked from [vim-sway-nav](https://git.sr.ht/~jcc/vim-sway-nav).
 
 ## Requirements
 
@@ -16,22 +14,17 @@ Inspired by [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigat
 First, install this repository as a Vim plugin. For example, if you use [vim-plug](https://github.com/junegunn/vim-plug):
 
 ```
-Plug REPO " TODO
+Plug "nuchs/vim-hypr-nav"
 ```
 
-Second, download the [`vim-sway-nav` script](TODO) and stick it somewhere in your `$PATH`.
-
-Finally, modify your Sway config to use `vim-sway-nav` instead of your normal `focus left`, `focus down`, etc. bindings:
+Then, modify your Sway config to use `vim-hypr-nav` instead of your normal `focus left`, `focus down`, etc. bindings:
 
 ```
-bindsym $mod+$left exec vim-sway-nav left
-bindsym $mod+$down exec vim-sway-nav down
-bindsym $mod+$up exec vim-sway-nav up
-bindsym $mod+$right exec vim-sway-nav right
+bind = $mainMod, $left, exec vim-hypr-nav, l
+bind = $mainMod, $right, exec vim-hypr-nav, r
+bind = $mainMod, $up, exec vim-hypr-nav, u
+bind = $mainMod, $down, exec vim-hypr-nav, d
 ```
 
-You can now use `$mod+<arrow>` to navigate among Sway windows and Vim splits!
+You can now use `$mod+<direction>` to navigate among Hyprland windows and Vim splits!
 
-## Contributing
-
-Contributions are welcome! You can send questions, bug reports, patches, etc. by email to [~jcc/public-inbox@lists.sr.ht](https://lists.sr.ht/~jcc/public-inbox). (Don't know how to contribute via email? Check out the interactive tutorial at [git-send-email.io](https://git-send-email.io), or [email me](mailto:me@jasoncarloscox.com) for help.)

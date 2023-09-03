@@ -1,17 +1,17 @@
 #!/bin/sh
 #
-# vim-sway-nav - Use the same bindings to move focus between sway windows and
-# vim splits. Requires the accompanying vim plugin.
+# vim-hypr-nav - Use the same bindings to move focus between hyprland windows 
+# and vim splits. Requires the accompanying vim plugin and jq.
 
 dir="$1"
 
 case "$dir" in
-    up) ;;
-    right) ;;
-    down) ;;
-    left) ;;
+    u) ;;
+    r) ;;
+    d) ;;
+    l) ;;
     *)
-        echo "USAGE: $0 up|right|down|left"
+        echo "USAGE: $0 u|r|d|l"
         exit 1
 esac
 
@@ -39,10 +39,10 @@ get_descendant_vim_pid() {
     return 1
 }
 
-if focused_pid="$(swaymsg -t get_tree | jq -e '.. | select(.focused? == true).pid')"; then
+if focused_pid="$(hyprctl dispatch activewindow -j | jq -e '.pid')"; then
     terms="$(find /dev/pts -type c -not -name ptmx | sed s#^/dev/## | tr '\n' ,)"
     if vim_pid="$(get_descendant_vim_pid "$focused_pid" "$terms")"; then
-        servername_file="${XDG_RUNTIME_DIR:-/tmp}/vim-sway-nav.$vim_pid.servername"
+        servername_file="${XDG_RUNTIME_DIR:-/tmp}/vim-hypr-nav.$vim_pid.servername"
         read -r program servername <"$servername_file"
 
         if [ "$program" = vim ]; then
@@ -53,10 +53,10 @@ if focused_pid="$(swaymsg -t get_tree | jq -e '.. | select(.focused? == true).pi
 
         if [ -n "$serverarg" ] && [ -n "$servername" ]; then
             "$program" "$serverarg" "$servername" \
-                --remote-expr "VimSwayNav('$dir')" >/dev/null 2>&1 \
+                --remote-expr "VimHyprNav('$dir')" >/dev/null 2>&1 \
                 && exit 0
         fi
     fi
 fi
 
-swaymsg focus "$dir"
+hyprctl dispatch movefocus "$dir"
