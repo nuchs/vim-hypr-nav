@@ -39,7 +39,7 @@ get_descendant_vim_pid() {
     return 1
 }
 
-if focused_pid="$(hyprctl dispatch activewindow -j | jq -e '.pid')"; then
+if focused_pid="$(hyprctl activewindow -j | jq -e '.pid')"; then
     terms="$(find /dev/pts -type c -not -name ptmx | sed s#^/dev/## | tr '\n' ,)"
     if vim_pid="$(get_descendant_vim_pid "$focused_pid" "$terms")"; then
         servername_file="${XDG_RUNTIME_DIR:-/tmp}/vim-hypr-nav.$vim_pid.servername"
