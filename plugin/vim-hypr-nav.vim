@@ -1,7 +1,7 @@
 " vim-hypr-nav.vim -- Use hyprland's focus direction bindings to move between vim
 " splits as well. Requires the accompanying helper script.
 "
-" Shamlessly hacked from https://git.sr.ht/~jcc/vim-hypr-nav
+" Shamlessly hacked from https://git.sr.ht/~jcc/vim-sway-nav
 
 let clientserver = has("nvim") || has("clientserver")
 if exists("g:loaded_vim_hypr_nav") || empty($HYPRLAND_INSTANCE_SIGNATURE) || !clientserver
